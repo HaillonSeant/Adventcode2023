@@ -57,10 +57,55 @@ def Comptage2():
 				fin=False
 				break
 	return res
-print(Comptage2())
-
-
-
-
+def Combienz(lista):
+	liz=[]
+	for pos in lista:
+		t=0
+		run=True
+		while run:
+			for i in range(len(LR)):
+				t+=1
+				if LR[i]=="L":
+					pos=dico[pos][0]
+				else:
+					pos=dico[pos][1]
+				if pos[2]=="Z":
+					run=False
+					liz.append(t)
+					break
+	return liz
+def pgcd(x,y):
+	run=True
+	pdiv=1
+	if x == y :
+		return 1
+	elif x>y:
+		for div in range(2,y+1):
+			if x%div == 0 and y%div==0:
+				pdiv=div
+	else:
+		for div in range(2,x+1):
+			if x%div == 0 and y%div==0:
+				pdiv=div
+	return pdiv
+def ppcm(x,y):
+	return int((x*y)/pgcd(x,y))
+def ppcmmult(li):
+	lippcm=[]
+	i=0
+	if len(li)%2==0:
+		for t in range((len(li)//2)):
+			lippcm.append(ppcm(li[i],li[i+1]))
+			i+=2
+	else:#impair petit tricks
+		for t in range((len(li)//2)):
+			lippcm.append(ppcm(li[i],li[i+1]))
+			i+=2
+		lippcm.append(li[-1])
+	if len(lippcm) !=1:
+		return(ppcmmult(lippcm))
+	return lippcm
+print(ppcmmult(Combienz(lista)))
+print(time.time()-start)
 
 
