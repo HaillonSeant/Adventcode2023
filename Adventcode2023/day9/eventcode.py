@@ -1,65 +1,60 @@
 import sys
 import time
 start = time.time() 
-part=start
 input=open(sys.argv[1],"r")
-lines=input.readlines()
-dico={}
-som=0
-LR = lines[0].replace("\n","")
-def Creadico(lines):
-	for line in lines[2:]:
-		cle = line[:3]
-		dico[(cle)] = (line[7:10],line[12:15])
-def Comptage():
-	fin = True
-	pos="AAA"
-	res=0
-	while fin :
-		for i in range(len(LR)):
-			res+=1
-			if LR[i] == "L":
-				pos=dico[pos][0]
-			else:
-				pos=dico[pos][1]
-			if pos == "ZZZ":
-				fin = False
-				break
-	return res
-Creadico(lines)
-print(Comptage())
-print(time.time()-start)
-def RecupA():
-	lista=[]
-	for line in lines[2:]:
-		if line[2] == "A":
-			lista.append(line[:3])
-	return lista
-lista=RecupA()
-def Comptage2():
-	fin = True
-	res=0
-	tous= False
-	while fin :
-		for i in range(len(LR)):
-			for i2 in range(len(lista)):
-				if LR[i]=="L":
-					lista[i2]=dico[lista[i2]][0]
-				else:
-					lista[i2]=dico[lista[i2]][1]
-			tous=True
-			res+=1
-			for pos in lista:
-				if pos[2] != "Z":
-					tous=False
-					break
-			if tous:
-				fin=False
-				break
-	return res
-print(Comptage2())
+lines=input.read().strip()
+lines = lines.split("\n")
+for i in range(len(lines)):
+	lines[i]=lines[i].split(" ")
+def Convertstr():
+	for line in lines:
+		for i in range(len(line)):
+			line[i]=int(line[i])
+def Step(line):
+	listep=[]
+	for i in range(len(line)-1):
+		listep.append(line[i+1]-line[i])
+	return listep
 
+def Crealistep(line):
+	listep=[]
+	listep.append(line)
+	i=0
+	while True:
+		step = Step(listep[i])
+		if step.count(0) == len(step):
+			listep.append(step)
+			break
+		i+=1
+		listep.append(step)
+	return listep
 
+def Resultatstep(listep):
+	listep.reverse()
+	for i in range(len(listep)-1):
+		listep[i+1].append(listep[i][-1]+listep[i+1][-1])
+	return listep[len(listep)-1][-1]
+def Sommation(lines):
+	som=0
+	for line in lines:
+		som+=Resultatstep(Crealistep(line))
+	return som
+Convertstr()
+print(Sommation(lines))
+
+#part2###
+def Resultatstep2(listep):
+	listep.reverse()
+	for i in range(len(listep)-1):
+		listep[i+1].insert(0,listep[i+1][0]-listep[i][0])
+		print(listep)
+	return listep[len(listep)-1][0]
+def Sommation2(lines):
+	som=0
+	for line in lines:
+		som+=Resultatstep2(Crealistep(line))
+	return som
+print(Sommation2(lines))
 
 
 
