@@ -98,16 +98,6 @@ def Mouvement(beam):
 				break				
 			else:
 				beam=(beam[0]+beam[2],beam[1]+beam[3],beam[2],beam[3])
-		# if t==1:
-		# 	for li in grille2:
-		# 		for en in lienergize:
-		# 			if grille2[en[0]][en[1]]!="1":
-		# 				grille2[en[0]]=grille2[en[0]][0:en[1]]+"1"+grille2[en[0]][en[1]+1:]
-		# 	for li in grille2:
-		# 		print(li)
-		# 	print('')
-		# 	input("")
-
 def Comptage():
 	while len(libeam)!=0:
 		Mouvement(libeam[0])
@@ -149,7 +139,6 @@ def Test():#marche pas, pourquoi ? mmême chose mais endehors fonction en bas.1
 			res=som
 		som=0
 	print(res)	
-
 start=time.time()
 Comptage()
 end=time.time()
@@ -199,9 +188,3 @@ for i in range(len(grille[0])):#colonnes vers hauts
 end=time.time()
 print(res)
 print("Partie 2 de la honte absolue :",end-start)
-# libeamsave=[]
-# lienergiz
-
-
-
-
