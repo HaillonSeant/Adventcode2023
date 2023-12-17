@@ -187,4 +187,4 @@ for i in range(len(grille[0])):#colonnes vers hauts
 	som=0
 end=time.time()
 print(res)
-print("Partie 2 de la honte absolue :",end-start)
+print("Partie 2 de la honte absolue :",(end-start)%60,"min",(end-start)//60,"sec")
