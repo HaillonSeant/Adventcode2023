@@ -1,6 +1,5 @@
 import sys
 import time
-start=time.time()
 grille=open(sys.argv[1],"r").read().strip().split('\n')
 lienergize=[]
 libeam=[(0,-1,0,1)]#tuple (y,x,vy,vx) 
@@ -8,7 +7,6 @@ libeamsave=[]
 som=0
 def Nextile(beam):
 	global som
-	global lienergize
 	if beam[2]==-1:
 		if beam[0]-1<0:
 			return 0
@@ -38,11 +36,7 @@ def Nextile(beam):
 			lienergize.append((beam[0],beam[1]+1))
 		return grille[beam[0]][beam[1]+1]
 def Mouvement(beam):
-	global libeam
 	nextile=0
-	grille2=[]
-	for li in grille:
-		grille2.append(li[::])
 	while True:
 		nextile=Nextile(beam)
 		if nextile==0:
@@ -115,116 +109,99 @@ def Mouvement(beam):
 		# 	input("")
 
 def Comptage():
-	global libeam
 	while len(libeam)!=0:
-		Mouvement(libeam[0],libeam)
-def Test():
-	global som
-	global lienergize
-	global libeam
-	ly=len(grille)-1
-	lx=len(grille[0])-1
-	#les quatres coin d'abord
-	#haut gauche vers la droite
-	libeam2=[(0,-1,0,1)]
-	Comptage()
-	res=som
-	som=0
-	libeamsave=[]
-	lienergize=[]
-	libeam([(-1,0,1,0)])
-	#haut gauche vers le bas
-	Comptage()
-	print(som)
-	input("")
-	if som > res:
-		res=som
-	som=0
-	libeamsave=[]
-	lienergize=[]
-	#bas gauche vers la droite 
-	Comptage([(ly,-1,0,1)])
-	if som > res:
-		res=som
-	som=0
-	libeamsave=[]
-	lienergize=[]
-	#bas gauche vers le haut
-	Comptage([(ly+1,0,-1,0)])
-	if som > res:
-		res=som
-	som=0
-	libeamsave=[]
-	lienergize=[]
-	#bas droit vers gauche
-	Comptage([(ly,lx+1,0,-1)])
-	if som > res:
-		res=som
-	som=0
-	libeamsave=[]
-	lienergize=[]
-	#bas droit vers haut
-	Comptage([(ly+1,lx,-1,0)])
-	if som > res:
-		res=som
-	som=0
-	libeamsave=[]
-	lienergize=[]
-	#bas haut vers gauche
-	Comptage([(0,lx+1,0,-1)])
-	if som > res:
-		res=som
-	som=0
-	libeamsave=[]
-	lienergize=[]
-	#bas droit vers bas
-	Comptage([(-1,lx,1,0)])
-	if som > res:
-		res=som
-	som=0
-	libeamsave=[]
-	lienergize=[]
-	for i in range(len(grille)):#lignes gauches
-		Comptage([(i,-1,0,1)])
+		Mouvement(libeam[0])
+def Test():#marche pas, pourquoi ? mmême chose mais endehors fonction en bas.1
+	res=0
+	lx=len(grille[0])
+	ly=len(grille)
+	for i in range(len(grille)):#lignes vers droite
+		libeamsave=[]
+		lienergize=[]		
+		libeam.append((i,-1,0,1))
+		Comptage()
 		if som>res:
 			res=som
 		som=0
+	for i in range(len(grille)):#lignes vers gauche
 		libeamsave=[]
 		lienergize=[]
-	for i in range(len(grille)):
-		Comptage([(i,lx+1,0,-1)])#lignes droites
+		libeam.append((i,lx,0,-1))
+		# print(libeam)
+		Comptage()
 		if som>res:
 			res=som
 		som=0
+	for i in range(len(grille[0])):#colonnes vers bas
 		libeamsave=[]
 		lienergize=[]
-	for i in range(len(grille[0])):
-		Comptage([(-1,i,1,0)])#colonnes hauts 
+		libeam.append((-1,i,1,0))
+		Comptage() 
 		if som>res:
 			res=som
 		som=0
+	for i in range(len(grille[0])):#colonnes vers hauts
 		libeamsave=[]
-		lienergize=[]	
-	for i in range(len(grille[0])):
-		Comptage([(ly+1,i,-1,0)])#colonnes hauts 
+		lienergize=[]		
+		libeam.append((ly,i,-1,0))
+		Comptage() 
 		if som>res:
 			res=som
 		som=0
-		libeamsave=[]
-		lienergize=[]
 	print(res)	
 
-
-
-
-# Comptage(libeam)
-# print(som)
-# print(time.time()-start)
-start2=time.time()
-libeamsave=[]
-lienergize=[]
+start=time.time()
+Comptage()
+end=time.time()
+print(som)
+print("Partie 1 :",end-start)
+start=time.time()
 som=0
-Test()
-print(time.time()-start2)
+res=0
+libeam=[]
+#.1 c'est la même chose ici ! 
+for i in range(len(grille)):#lignes vers droite
+	libeamsave=[]
+	lienergize=[]		
+	libeam.append((i,-1,0,1))
+	Comptage()
+	if som>res:
+		res=som
+	som=0
+for i in range(len(grille)):#lignes vers gauche
+	libeamsave=[]
+	lienergize=[]
+	libeam.append((i,110,0,-1))
+	# print(libeam)
+	Comptage()
+	if som>res:
+		res=som
+	som=0
+for i in range(len(grille[0])):#colonnes vers bas
+	libeamsave=[]
+	lienergize=[]
+	libeam.append((-1,i,1,0))
+	Comptage() 
+	if som>res:
+		res=som
+	som=0
+for i in range(len(grille[0])):#colonnes vers hauts
+	libeamsave=[]
+	lienergize=[]		
+	libeam.append((110,i,-1,0))
+	# print(libeam)
+	Comptage() 
+	# print((110,i,-1,0),som)
+	# input("")
+	if som>res:
+		res=som
+	som=0
+end=time.time()
+print(res)
+print("Partie 2 de la honte absolue :",end-start)
+# libeamsave=[]
+# lienergiz
+
+
 
 
