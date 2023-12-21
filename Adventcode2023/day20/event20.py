@@ -1,9 +1,54 @@
 import sys
 import time
 from collections import deque
+from math import prod
 f=open("input.txt","r")
 data=f.read().strip().split("\n")
 f.close()
+###ppc###
+def decomp(num):
+    lifact=[]
+    liexp=[]
+    n=2
+    t=0
+    while num!=1:
+        while num%n==0:
+            num=num//n
+            t+=1
+        if t!=0:
+            lifact.append(n)
+            liexp.append(t)
+            t=0
+        n+=1
+    return [lifact,liexp]
+def ppcm(a,b):
+    a=decomp(a)
+    b=decomp(b)
+    p=1
+    for i in range(len(a[0])):
+        if a[0][i] not in b[0]:
+            p*=a[0][i]**a[1][i]
+        else:
+            if a[1][i]>b[1][b[0].index(a[0][i])]:
+                p*=a[0][i]**a[1][i]
+            else :
+                p*=b[0][b[0].index(a[0][i])]**b[1][b[0].index(a[0][i])]
+    for i in range(len(b[0])):
+        if b[0][i] not in a[0]:
+            p*=b[0][i]**b[1][i]
+        else:
+            if b[1][i]>a[1][a[0].index(b[0][i])]:
+                p*=b[0][i]**b[1][i]
+            else :
+                p*=a[0][a[0].index(b[0][i])]**a[1][a[0].index(b[0][i])]
+    return p
+def ppcmmult(li):
+    while len(li)!=1:
+        a=li.pop()
+        b=li.pop()
+        li.append(ppcm(a,b))
+    return li[0]
+###ppcm###
 class Flipflop:
     def __init__(self):
         self.name=""
@@ -34,6 +79,7 @@ class Conjunction:
         self.dicoetat["broad"]=1#erengistrement des inputs
         self.queue=deque()
         self.liaison=[]
+        self.last=False
     def changement(self):
         signal=self.queue.popleft()
         self.dicoetat[signal[1]]=signal[0]
@@ -43,7 +89,7 @@ class Conjunction:
         else:
             self.send((1,self.name))
             lipu[1]+=len(self.liaison)
-            if self.name=="jz":#modif a la main pour trouver les boucles
+            if self.last:
                 compt[0]+=1
     def send(self,signal):
         for dest in self.liaison:
@@ -93,16 +139,24 @@ while t>0:
     t-=1
 print(lipu[0]*lipu[1])
 end=time.time()
-print(end-start)
+print('Durée Partie 1 :',end-start)
 start=time.time()
 dico=recupdata(data)
 compt=[0]
 #xm relier que a ng,sv,ft,jz
+dico["ng"].last=True
+dico["sv"].last=True
+dico["ft"].last=True
+dico["jz"].last=True
+valid=[]
 while True:
     t+=1
     button(dico)
     if compt[0]==1:
-        print(t)
-        break
+        valid.append(t)
     compt[0]=0
-#valeur trouver ng=3803 sv=3889 ft=3877 jz=3917 application du ppcm(fonction du day8 utilisé)
+    if len(valid)==4:
+        break
+print(prod(valid))
+end=time.time()
+print('Durée Partie 2 :',end-start)
