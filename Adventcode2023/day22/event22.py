@@ -89,9 +89,6 @@ def remplimatrice(briques) :
 def recupxyminmax(briques):
     mini=0#impossible de toucher 0
     maxi=0
-    tmp=[]
-    nbriques=[]
-    t=0
     for brique in briques:
         if brique[0][0]>maxi:
             maxi=brique[0][0]
@@ -103,9 +100,6 @@ def recupxyminmax(briques):
     xmax=maxi
     mini=0#impossible de toucher 0
     maxi=0
-    tmp=[]
-    nbriques=[]
-    t=0
     for brique in briques:
         if brique[0][1]>maxi:
             maxi=brique[0][1]
@@ -114,36 +108,129 @@ def recupxyminmax(briques):
         elif brique[0][1]<mini:
             mini=brique[0][1]
     print(xmin,xmax,'x',mini,maxi,'y')#plus utilisé c'etait pour le recup a la main
+def creadico():#dico des briques (quelle brique elle soutienne et combien la soutienne)
+    dicobriques={}
+    for i in range(1,1301):#1300 briques
+        dicobriques[i]=[set(),0]
+    return dicobriques 
 def fall():
     for briquez in briques[1:]:#briquez sont les briques a une hauteur z
-        print(briquez)
+        z1=briquez[0][0][2]-1
         for brique in briquez:
-            z1=briquez[0][0][2]-1
-            z2=z1
+            z2=z1-1
             pos=brique[0]
             axe=brique[1][0]
-            rang=brique[1][1]
-            stop=False
+            bid=matrice[z1][pos[0]][pos[1]]#id de la brique etudie
+            run=True
+            stopfall=False
             if axe=='x':#on regarde dans le plan y=pos[1]
+                rang=brique[1][1]
                 y=pos[1]
-                while z1>1:
-                    z1-=1
+                while run:
                     for x in range(pos[0],pos[0]+rang+1):
-                        if matrice[z][x][y]!=0:
-                            stop=True
-                            for x in range(pos[0],pos[0]+rang+1):
-                                matrice[z2][x][y]=0    
-
-                    
-
-
-
-            
+                        if matrice[z2][x][y]!=0:
+                            for i in range(pos[0],pos[0]+rang+1):#suprime ancienne pos et cree nouvelle pos
+                                matrice[z1][i][y]=0
+                                matrice[z2+1][i][y]=bid
+                            stopfall=True
+                            break
+                    if stopfall:
+                        run=False
+                        lid=0
+                        for x in range(x,pos[0]+rang+1):#garde de l'ancienne boucle for
+                            id=matrice[z2][x][y]#recup id de la brique qui bloque
+                            if lid != id and id!=0: #pour pas compter 2 fois la même brique
+                                dicobriques[bid][1]+=1
+                                dicobriques[id][0].add(bid)#la brique id soutient la bid
+                            lid=id
+                    elif z2==0:
+                        run=False
+                        for i in range(pos[0],pos[0]+rang+1):
+                            matrice[z1][i][y]=0
+                            matrice[z2][i][y]=bid
+                    z2-=1            
+            elif axe=='y':#on regarde dans le plan y=pos[1]
+                rang=brique[1][1]
+                x=pos[0]
+                while run:
+                    for y in range(pos[1],pos[1]+rang+1):
+                        if matrice[z2][x][y]!=0:
+                            for i in range(pos[1],pos[1]+rang+1):#suprime ancienne pos et cree nouvelle pos
+                                matrice[z1][x][i]=0
+                                matrice[z2+1][x][i]=bid
+                            stopfall=True
+                            break
+                    if stopfall:
+                        run=False
+                        lid=0
+                        for y in range(y,pos[1]+rang+1):#garde de l'ancienne boucle for
+                            id=matrice[z2][x][y]#recup id de la brique qui bloque
+                            if lid != id and id!=0: #pour pas compter 2 fois la même brique
+                                dicobriques[bid][1]+=1
+                                dicobriques[id][0].add(bid)#la brique id soutient la bid
+                            lid=id
+                    elif z2==0:
+                        run=False
+                        for i in range(pos[0],pos[0]+rang+1):
+                            matrice[z1][x][i]=0
+                            matrice[z2][x][i]=bid
+                    z2-=1     
+            elif axe=="z":
+                rang=brique[1][1]
+                x=pos[0]
+                y=pos[1]
+                while run:
+                    if matrice[z2][x][y]!=0:
+                        for i in range(rang+1):
+                            matrice[z1+i][x][y]=0
+                            matrice[z2+1+i][x][y]=bid
+                            stopfall=True
+                    if stopfall:
+                        run=False
+                        id=matrice[z2][x][y]
+                        dicobriques[bid][1]=1
+                        dicobriques[id][0].add(bid)
+                    elif z2==0:
+                        run=False
+                        for i in range(rang+1):
+                            matrice[z1+i][x][y]=0
+                            matrice[z2+1+i][x][y]=bid
+                    z2-=1
+            else:
+                x=pos[0]
+                y=pos[0]
+                while run:
+                    if matrice[z2][x][y]!=0:
+                        matrice[z1][x][y]=0
+                        matrice[z2+1][x][y]=bid
+                        stopfall=True
+                    if stopfall:
+                        run=False
+                        id=matrice[z2][x][y]
+                        dicobriques[bid][1]=1
+                        dicobriques[id][0].add(bid)
+                    elif z2==0:
+                        run=False
+                        matrice[z1][x][y]=0
+                        matrice[z2][x][y]=bid
+                    z2-=1          
+def validdestru():
+    som=0
+    for key in dicobriques:
+        destru=True
+        for key2 in dicobriques[key][0]:
+            if dicobriques[key2][1]==1:
+                destru=False
+                break
+        if destru:
+            som+=1
+    print(som)
 start=time()
 briques=recupbrique(briques)
 modifbrique()#compression
 briques=recupz(briques)#tri par hauteur
 matrice=creamatrice()
 remplimatrice(briques)
-print(time()-start)
+dicobriques=creadico()
 fall()
+validdestru()
