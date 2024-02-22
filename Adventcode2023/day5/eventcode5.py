@@ -148,6 +148,7 @@ def Dans_lordre(keys):
 # 			tmp.append(i)
 # 	return tmp
 # def Create_range(liseed):
+#solution test = 42
 liseed=Recupdata(data)
 # soluce=Find_min()
 # print('premiere partie : ',ti()-start)
